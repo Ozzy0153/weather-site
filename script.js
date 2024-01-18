@@ -12,17 +12,17 @@ function success(position) {
     lat = position.coords.latitude;
     lon = position.coords.longitude;
 
-    getWeather();
+    getWeatherByCity();
     getExtendedForecast();
 }
 
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
-    // Almaty coords
-    lat = 43.25654;
-    lon = -76.92848;
 
-    getWeather();
+    lat = 51.098009;
+    lon = 71.434096;
+
+    getWeatherByCity();
     getExtendedForecast();
 }
 function getCityName(lat, lon) {
@@ -37,33 +37,33 @@ function getCityName(lat, lon) {
         })
         .catch(error => {
             console.error('Error fetching city name:', error);
-            throw error; // Rethrow the error to be caught by the calling function
+            throw error;
         });
 }
 
 
-function getWeather() {
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=${apiKey}&units=metric`;
+function getWeatherByCity() {
+    const cityInput = document.getElementById('cityInput').value;
 
-    fetch(currentWeatherUrl)
+    const weatherByCityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}&units=metric`;
+
+    fetch(weatherByCityUrl)
         .then(response => response.json())
         .then(data => {
-            const currentWeather = data.current;
-            const feelsLike = currentWeather.feels_like;
-            const humidity = currentWeather.humidity;
-            const pressure = currentWeather.pressure;
-            const windSpeed = currentWeather.wind_speed;
-            const rainVolume3h = data.hourly && data.hourly[0] && data.hourly[0].rain && data.hourly[0].rain['3h'];
+            const currentWeather = data.main;
+            const weatherDescription = data.weather[0].description;
             const weatherInfo = document.getElementById('weather-info');
             weatherInfo.innerHTML = `
-        <p>Temperature: ${currentWeather.temp} &deg;C</p>
-        <p>Weather: ${currentWeather.weather[0].description}</p>
-        <p>Feels Like: ${feelsLike} &deg;C</p>
-        <p>Humidity: ${humidity}%</p>
-        <p>Pressure: ${pressure} hPa</p>
-        <p>Wind Speed: ${windSpeed} m/s</p>
-        <p>Rain Volume (last 3 hours): ${rainVolume3h || 0} mm</p>
-      `;
+                <p>Temperature: ${currentWeather.temp} &deg;C</p>
+                <p>Weather: ${weatherDescription}</p>
+                <p>Feels Like: ${currentWeather.feels_like} &deg;C</p>
+                <p>Humidity: ${currentWeather.humidity}%</p>
+                <p>Pressure: ${currentWeather.pressure} hPa</p>
+                <p>Wind Speed: ${data.wind.speed} m/s</p>
+            `;
+
+            const lat = data.coord.lat;
+            const lon = data.coord.lon;
 
             getCityName(lat, lon)
                 .then(cityData => {
@@ -75,23 +75,28 @@ function getWeather() {
                     console.error('Error fetching city name:', error);
                 });
 
-            getExtendedForecast();
+            getExtendedForecast(lat, lon);
         })
         .catch(error => {
-            console.error('Error fetching weather data:', error);
+            console.error('Error fetching weather data by city:', error);
         });
 }
 
 
-function initMap(lat, lon) {
-    const map = L.map('map').setView([lat, lon], 13);
+let map;  // Declare a global variable to store the map object
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+function initMap(lat, lon) {
+    if (map) {
+        map.remove();  // Remove the existing map if it exists
+    }
+
+    map = L.map('map').setView([lat, lon], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
 
     L.marker([lat, lon]).addTo(map);
 }
+
 
 function getExtendedForecast() {
     const extendedForecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${apiKey}&units=metric`;
@@ -103,7 +108,7 @@ function getExtendedForecast() {
 
             if (extendedForecast) {
                 const forecastContainer = document.getElementById('extended-forecast-container');
-                forecastContainer.innerHTML = '<h2 style="text-align: center; margin-bottom: 0;">14-Day Extended Forecast</h2>';
+                forecastContainer.innerHTML = '<h2 style="text-align: center; margin-bottom: 0;">7 - Days Extended Forecast</h2>';
 
                 extendedForecast.forEach(day => {
                     const date = new Date(day.dt * 1000);

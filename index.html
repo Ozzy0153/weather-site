@@ -11,8 +11,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Local Weather</h1>
+<div><h1>Local Weather</h1>
+    <div id="city-input-container">
+    <label for="cityInput">Enter City Name: </label>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getWeatherByCity()">Get Weather</button></div>
+</div>
+
 <div id="content">
+
     <div id="weather-info"></div>
     <div id="map"></div>
 </div>
