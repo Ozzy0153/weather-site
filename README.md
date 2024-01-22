@@ -57,7 +57,7 @@ Utilizes the Leaflet library to display an interactive map with the user's locat
 
 ## Dynamic Forecast Display:
 
-The 14-day extended forecast is dynamically generated and displayed based on the API response.
+The 7-day extended forecast is dynamically generated and displayed based on the API response.
 
 ## Error Handling:
 
