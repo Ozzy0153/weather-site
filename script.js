@@ -52,6 +52,8 @@ function getWeatherByCity() {
         .then(data => {
             const currentWeather = data.main;
             const weatherDescription = data.weather[0].description;
+            const weatherIcon = data.weather[0].icon;
+
             const weatherInfo = document.getElementById('weather-info');
             weatherInfo.innerHTML = `
                 <p>Temperature: ${currentWeather.temp} &deg;C</p>
@@ -60,6 +62,7 @@ function getWeatherByCity() {
                 <p>Humidity: ${currentWeather.humidity}%</p>
                 <p>Pressure: ${currentWeather.pressure} hPa</p>
                 <p>Wind Speed: ${data.wind.speed} m/s</p>
+                <p>Weather Icon: <img src="https://openweathermap.org/img/wn/${weatherIcon}.png" alt="Weather Icon" style="width: 25px; height: 25px;"></p>
             `;
 
             const lat = data.coord.lat;
@@ -83,11 +86,11 @@ function getWeatherByCity() {
 }
 
 
-let map;  // Declare a global variable to store the map object
+let map;
 
 function initMap(lat, lon) {
     if (map) {
-        map.remove();  // Remove the existing map if it exists
+        map.remove();
     }
 
     map = L.map('map').setView([lat, lon], 13);

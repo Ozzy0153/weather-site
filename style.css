@@ -5,7 +5,14 @@ body {
     height: 100vh;
     font-family: 'Arial', sans-serif;
 }
-
+.container{
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    font-size: 24px;
+    font-weight: bold;
+}
 h1 {
     text-align: center;
     color: #fff;
