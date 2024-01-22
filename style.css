@@ -26,6 +26,14 @@ h1 {
     font-weight: bold;
 }
 
+#cityInput{
+    font-size: 20px;
+}
+
+#weather-button{
+    font-size: 20px;
+}
+
 #content {
     display: flex;
     flex: 1;

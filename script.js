@@ -98,7 +98,7 @@ function initMap(lat, lon) {
 }
 
 
-function getExtendedForecast() {
+function getExtendedForecast(lat, lon) {
     const extendedForecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${apiKey}&units=metric`;
 
     fetch(extendedForecastUrl)
